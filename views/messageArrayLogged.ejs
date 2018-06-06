@@ -69,7 +69,7 @@ color: black; vertical-align: middle; text-align: center; margin-left: 5%; borde
           
   <div class="float: right; height:100%;">
                   <% if(buttonLinkResults){ %>
-           <a href="/results/<%=buttonLinkResults%>" ><button type="button" style="text-align: center; display:table-cell; vertical-align:middle;  height:100%; width: 100%;">
+           <a href="/results/<%=buttonLinkResults%>" ><button type="button" style="text-align: center; display:table-cell; vertical-align:middle;  height:100%; width: 100%; background-color:lightgreen;">
             <%=buttonMessageResults%>
             </button></a>
           </form>
@@ -79,7 +79,7 @@ color: black; vertical-align: middle; text-align: center; margin-left: 5%; borde
           <% if(buttonLinkDelete){ %>
           <form action ="/deletePoll" method="POST" style="height:100%">
             <input value="<%=buttonLinkDelete%>" name="deleteId" style="display: none">
-          <button style="text-align: center; vertical-align:middle; height:100%; width: 100%;">
+          <button style="text-align: center; vertical-align:middle; height:100%; width: 100%; background-color:#F33977;">
              <%=buttonMessageDelete%>
             </button>
           </form>
