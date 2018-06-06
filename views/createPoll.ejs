@@ -1,0 +1,67 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+</head>
+<body class="container">
+
+<header>
+  <% if(!locals.user){ %>
+     <% include ../views/partials/header  %>
+  <%  %>
+  <% }else{ %>
+     <% include ../views/partials/logHeader  %>
+  <% } %>
+</header>
+
+<main>
+    <div class="jumbotron">
+      <h1>Lets create a poll</h1>     
+      <br>
+      <form action="/createPoll" method="POST">
+<!--         <input type="text" name="username"  placeholder="username">   -->
+<!--         <input type="text" name="password"  placeholder="password">   -->
+  <br>
+        <input type="text" name="pollTitle"  placeholder="title of poll">  
+  <br>
+  <br>
+  <ol>
+    
+
+<li> <input type="text" name="pollEntries[]"  placeholder="options"> </li>
+<li> <input type="text" name="pollEntries[]"  placeholder="options"> </li>
+<li> <input type="text" name="pollEntries[]"  placeholder="options"> </li>
+         
+      </ol>
+
+    
+  <button type="button" style="background-color:green; color: white;" id="addMoreEntries">
+    More Poll Choices
+  </button>
+  <br>
+<!--         <input type="text" name="passwordConf"  placeholder="Please confirm your password">   -->
+  <br>
+          <button>
+            I have entered the required details
+          </button>
+        </form>   
+  </div>
+       <script>
+
+         $("#addMoreEntries").click(function(){
+        $("ol").append("<li> <input type='text' name='pollEntries[]'  placeholder='options'> </li>");
+    });
+     
+     </script>
+  
+</main>
+
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+
+</body>
+</html>
+

@@ -1,0 +1,51 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+</head>
+<body class="container">
+
+<header>
+  <% if(!locals.user){ %>
+     <% include ../views/partials/header  %>
+  <%  %>
+  <% }else{ %>
+     <% include ../views/partials/logHeader  %>
+  <% } %>
+</header>
+
+<main>
+    <div class="jumbotron">
+      <% for( var i=0; i < pollReturnObject.length; i++){ %>
+      <% var pollEntry = pollReturnObject[i].pollTitle;  %>
+      <ul>
+        <li style="background-color: darkblue; border: solid black 2px; height: 60px; width: 80%; margin-left:10%; display: table;">  <a style="color: white; vertical-align: middle; text-align: center; margin-left: 5%; border: solid red 1px; height: 60%; width: 150px; margin-top:20%; display: table-cell">
+      <%= pollEntry %>
+          </a>
+          
+          <button style="background-color: darkblue; color: white; float: right; height: 100%; width: 20%;">
+            abra
+          </button>   
+          <button style="background-color: darkblue; color: white; float: right; height: 100%; width: 20%;">
+            delete
+          </button>
+        </li>
+      </ul>
+      
+      
+      <% } %>
+      <% %>
+      <% %>
+
+    </div>
+</main>
+
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+
+</body>
+</html>
+

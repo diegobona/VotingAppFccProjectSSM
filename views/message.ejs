@@ -1,0 +1,52 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+</head>
+<body class="container">
+
+<header>
+  <% if(!locals.user){ %>
+     <% include ../views/partials/header  %>
+  <%  %>
+  <% }else{ %>
+     <% include ../views/partials/logHeader  %>
+  <% } %>
+</header>
+
+<main>
+    <div class="jumbotron">
+      <% if( locals.message1 ){ %>
+	  <h1>
+	  <%=message1%>
+	  </h1>	 
+	  <% } %>
+	  <% if( locals.message2 ){ %>
+	  <h2>
+	  <%=message2  %>
+	  </h2>	 
+	  <% } %>
+	  <% if( locals.message3 ){ %>
+	  <h3>
+	  <%= message3%>
+	  </h3>	 
+	  <% } %>
+	  <% if( locals.messageLink ){ %>
+	   <a href=" 
+	  <%= messageLink %>
+	  "> 
+	  <%=messageLink%>
+	  </a>
+	  <% } %>
+      
+  </div>
+</main>
+
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+
+</body>
+</html>

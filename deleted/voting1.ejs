@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Voting</title>
+    <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <link href="/public/style.css" rel="stylesheet" type="text/css">
+    <style>
+        .buttonChoice {
+            width: 20%;
+            height: 10%;
+        }
+    </style>
+</head>
+
+<body style="background-color: darkturquoise;">
+    <div style="background-color:white; margin-left:20%; margin-right: 20%;">
+        <div class="container">
+            <h1>Voting Page</h1>
+            <h3></h3>
+            <h4></h4>
+            <form action="/votePollAction" method="POST">
+                <input id="pollId" name="pollId" style="visibility: hidden" value=""> 
+
+                <div id="pollDetails">
+                    <%  for(var i = 0; i< votingOptions.length; i++){ %>
+                        <button class="buttonChoice" value="<%=votingOptions[i]%>" placeholder="<%=votingOptions[i].toString()%>" name="voteId"> <% votingOptions[i] %><h3><%=  votingOptions[i]   %></h3>
+                          
+                  </button>
+                        <%        } %>
+                </div>
+              </form>
+
+        </div>
+    </div>
+</body>
+  
+  <script>
+
+var assignee =  document.getElementById("pollId");
+var path = window.location.pathname;
+var uniqueId = path.split("/").pop();   
+assignee.value = uniqueId;
+// assignee.placeholder = uniqueId;
+
+  
+  </script>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+   <head>
+      <title>Create a User</title>
+      <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon"/>
+      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+      <link href="/public/style.css" rel="stylesheet" type="text/css">
+   </head>
+
+   <body>
+      <div class="container">
+         <h1>Lets create a user</h1>
+        <h3></h3>
+        <h4></h4>
+           
+       
+<form action="/createPoll" method="POST">
+        <input type="text" name="username"  placeholder="username">  
+<!--         <input type="text" name="password"  placeholder="password">   -->
+  <br>
+        <input type="text" name="pollTitle"  placeholder="title of poll">  
+  <br>
+  <br>
+        <input type="text" name="pollEntries[]"  placeholder="options">  
+        <input type="text" name="pollEntries[]"  placeholder="options">  
+        <input type="text" name="pollEntries[]"  placeholder="options">  
+  <br>
+<!--         <input type="text" name="passwordConf"  placeholder="Please confirm your password">   -->
+  <br>
+          <button>
+            I have entered the required details
+          </button>
+        </form>
+          <br>
+          <br>
+          <br>
+                  <br>
+          <br>
+          <br>
+        <a href="/login">
+          <button >
+  Login with an existing user
+        </button>
+        </a>
+        
+        <br>
+        
+<!-- <button href="/login.html">
+  Login with an existing user
+        </button>   -->
+   </div>
+   </body>
+
+</html>
