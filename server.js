@@ -18,7 +18,8 @@
  var mongoose = require('mongoose');
  var User = require("./models/user");
  var polls = require("./models/polls");
- mongoose.connect('Url goes here')
+ mongoose.connect(process.env.mongoose)
+
 
  var connection = mongoose.connection;
  connection.on('connected', function () { 
@@ -180,11 +181,10 @@ app.use(function(req, res, next) {
                var messageArray = [];
                for(var i = 0; i< pollList.length; i++){
                  var innerMessageArrayObject = {};
-               innerMessageArrayObject.title = pollList[i].pollTitle;
-               innerMessageArrayObject.title2 = pollList[i].uniqueId;
-               innerMessageArrayObject.Buttono = pollList[i].uniqueId;
-               innerMessageArrayObject.ButtonoResulto = pollList[i].uniqueId;
-               innerMessageArrayObject.ButtonoMessage = 'Results';
+               innerMessageArrayObject.pollTitle = pollList[i].pollTitle;
+               innerMessageArrayObject.pollUrl = pollList[i].uniqueId;
+               innerMessageArrayObject.buttonLinkResults = pollList[i].uniqueId;
+               innerMessageArrayObject.buttonMessageResults = 'Results';
                messageArray[i] = innerMessageArrayObject;  
                }
                
@@ -209,10 +209,12 @@ app.use(function(req, res, next) {
              var messageArray = [];
                for(var i = 0; i< pollReturnObject.length; i++){
                  var innerMessageArrayObject = {};
-                 innerMessageArrayObject.title = pollReturnObject[i].pollTitle;
-                 innerMessageArrayObject.title2 = pollReturnObject[i].uniqueId;
-                 innerMessageArrayObject.ButtonoDeleteo = pollReturnObject[i]._id;
-                 innerMessageArrayObject.ButtonoMessage = 'Delete';
+                 innerMessageArrayObject.pollTitle = pollReturnObject[i].pollTitle;
+                 innerMessageArrayObject.pollUrl = pollReturnObject[i].uniqueId;
+                 innerMessageArrayObject.buttonLinkDelete = pollReturnObject[i]._id;
+                 innerMessageArrayObject.buttonMessageDelete = 'Delete';
+                 innerMessageArrayObject.buttonLinkResults = pollReturnObject[i].uniqueId;
+                 innerMessageArrayObject.buttonMessageResults = 'Results';
                  messageArray[i] = (innerMessageArrayObject); 
                }
                var sendObject = {messageArray : messageArray}
@@ -270,46 +272,47 @@ app.route('/deletePoll')
                // req.session.userId = user._id;
 
 
-
- app.route('/votePollAction')
-     .post(function (req, res) {
-   if(!req.session[req.session.uniqueId]){
-		 var urlHolder = null;
-		 //if form submits poll id use it
-		 if(req.session.uniqueId){var requrl = req.session.uniqueId; console.log('req.body.pollId exists'); }else{console.log('please choose a poll id');}
-		 var voteId = String(req.body.voteId);
-		 var pollReturnObject = {};				 
-		 console.log('requested poll: ' + requrl + ",  requested vote: " + voteId);
-		 polls.findOne({ $or:[ {'pollTitle':requrl}, {'uniqueId':requrl} ]}
-		 , function (err, data) {
-			 var pollReturnObject = data;
-       // console.log('data is ' + data);
-			 urlHolder = pollReturnObject.uniqueId;
-			 var pollEntryArray = pollReturnObject.pollEntries[0];
-			 var numberArray = pollReturnObject.pollVotes;
-				console.log('retrieved a poll for voting on entry index  ' +  pollEntryArray.indexOf(voteId) + " ordered to increase a vote of  " + numberArray[pollEntryArray.indexOf(voteId)] );
-			 var votePosition = pollEntryArray.indexOf(voteId);          
-			 pollReturnObject.pollVotes[votePosition] = pollReturnObject.pollVotes[votePosition] + 1 ;
-			 // console.log('changed to = ' +  pollReturnObject )
-			 pollReturnObject.markModified('pollVotes')
-			 pollReturnObject.save(function(err){
-				 if(err){
-					 console.log(err);   
-					 return;
-					 }
-         req.session[req.session.uniqueId] = true;
-					 res.redirect('results/' + urlHolder );
-						 }
-							 );
-							 
-							 
-							 })
-}else{
-  res.render('message.ejs', {message2: 'Sorry but you have already voted. Try voting on another poll instead'})}
- }
-          
-          )
-							 
+app.route('/votePollAction')
+    .post(function (req, res) {
+            //checks if the user has already voted
+            if (!req.session[req.session.uniqueId]) {
+                //if form submits poll id use it
+                if (req.session.uniqueId) {
+                    var requrl = req.session.uniqueId; //uniqueId = url lookup route}
+                    var voteId = String(req.body.voteId);
+                    console.log('requested poll: ' + requrl + ",  requested vote: " + voteId);
+                    polls.findOne({
+                        'uniqueId': requrl
+                    }, function (err, data) {
+                        var urlHolder = data.uniqueId;
+                        var pollEntryArray = data.pollEntries[0];
+                        var voteCountArray = data.pollVotes;
+                        console.log('retrieved a poll for voting on entry index  ' + pollEntryArray.indexOf(voteId) + " ordered to increase a vote of  " + voteCountArray[pollEntryArray.indexOf(voteId)]);
+                        var votePosition = pollEntryArray.indexOf(voteId);
+                        data.pollVotes[votePosition] = data.pollVotes[votePosition] + 1;
+                        data.markModified('pollVotes')
+                        data.save(function (err) {
+                            if (err) {
+                                console.log(err);
+                                res.render('message.ejs', {
+                                    message2: 'An Unknown Error Occurred',
+                                    message3: 'Please try again later'
+                                });
+                                return;
+                            }
+                            req.session[req.session.uniqueId] = true;
+                            res.redirect('results/' + urlHolder);
+                        });
+                    })
+                } else {
+                    //If user has voted, prevent vote
+                    res.render('message.ejs', {
+                        message2: 'Sorry but you have already voted. Try voting on another poll instead'
+                    })
+                }
+            }}
+         )
+        
 
  app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -399,4 +402,3 @@ app.set('view engine', 'ejs');
          next();
      });
  }
-
