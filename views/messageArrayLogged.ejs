@@ -1,5 +1,3 @@
-<!-- views/pages/index.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +13,8 @@
 	margin-left:10%;
 	margin-top:10px; 
 	display: table;
+  overflow:auto;
+
 }
 .aNumber{
 	color: white;
@@ -37,54 +37,57 @@ color: black; vertical-align: middle; text-align: center; margin-left: 5%; borde
 <body class="container">
 
 <header>
+  
   <% if(!locals.user){ %>
      <% include ../views/partials/header  %>
-  <%  %>
+  <% console.log(locals); %>
   <% }else{ %>
      <% include ../views/partials/logHeader  %>
   <% } %>
-</header>
+  </header>
 
 <main>
     <div class="jumbotron">
             <ul>
       <% for( var i=0; i < messageArray.length; i++){ %>
-      <% var messageArrayVariable = messageArray[i].title;  %>
-      <% var messageArrayVariableLink = messageArray[i].title2;  %>
-      <% var ButtonoDeleteo = messageArray[i].ButtonoDeleteo;  %>
-      <% var ButtonoMessage = messageArray[i].ButtonoMessage;  %>
-      <% var ButtonoResulto= messageArray[i].ButtonoResulto;  %>
+      <% var messageArrayVariable = messageArray[i].pollTitle;  %>
+      <% var messageArrayVariableLink = messageArray[i].pollUrl;  %>
+      <% var buttonLinkDelete = messageArray[i].buttonLinkDelete;  %>
+      <% var buttonLinkResults = messageArray[i].buttonLinkResults;  %>
+      <% var buttonMessageDelete = messageArray[i].buttonMessageDelete;  %>
+      <% var buttonMessageResults = messageArray[i].buttonMessageResults;  %>
 
 <li class="liWhole">  
           <a class="aNumber"> Poll 
           <%= i  %>
           </a>
          <% if(messageArrayVariable){ %>
-          <a class="liTitle" onclick="location.href='/voting/<%= messageArrayVariableLink %>';" >
+          <a class="liTitle" onclick="location.href='/voting/<%=messageArrayVariableLink %>';" >
              <%= messageArrayVariable %>
              </a>
           <% } %> 
           
-          <% if(ButtonoDeleteo){ %>
-          <form action ="/deletePoll" method="POST"  style="display:table-cell; height:100%;">
-           <input value="<%=ButtonoDeleteo%>" name="deleteId" style="display:none">
-          <button style=" height:100%; width: 100%; background-color:red; color:white;">
-          <%=ButtonoMessage%> 
+  <div class="float: right; height:100%;">
+                  <% if(buttonLinkResults){ %>
+           <a href="/results/<%=buttonLinkResults%>" ><button type="button" style="text-align: center; display:table-cell; vertical-align:middle;  height:100%; width: 100%;">
+            <%=buttonMessageResults%>
+            </button></a>
+          </form>
+          <% } %> 
+      
+      
+          <% if(buttonLinkDelete){ %>
+          <form action ="/deletePoll" method="POST" style="height:100%">
+            <input value="<%=buttonLinkDelete%>" name="deleteId" style="display: none">
+          <button style="text-align: center; vertical-align:middle; height:100%; width: 100%;">
+             <%=buttonMessageDelete%>
             </button>
           </form>
-            
           <% } %> 
-  
-            <% if(ButtonoResulto){ %>
+  </div>
+            
 
-  <a href="/results/<%=ButtonoResulto%>">
-          <button href="/results/<%=ButtonoResulto%>" style=" height:100%; width: 100%;">
-          <%=ButtonoMessage%> 
-            </button>
-  </a>
-           <% } %> 
         </li>
-
       
       
       <% } %>
@@ -101,4 +104,3 @@ color: black; vertical-align: middle; text-align: center; margin-left: 5%; borde
 
 </body>
 </html>
-
