@@ -1,0 +1,82 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+</head>
+  <style>
+    .entryHolder{
+    background-color: aliceblue;
+      border: solid black 2px;
+      height: 60px; 
+      cursor: pointer;	
+      width: 80%; 
+      margin-left:10%; 
+      text-align: left;
+      display: table;
+      vertical-align: middle;
+    
+    }
+  </style>
+<body class="container">
+
+<header>
+  <% if(!locals.user){ %>
+     <% include ../views/partials/header  %>
+  <%  %>
+  <% }else{ %>
+     <% include ../views/partials/logHeader  %>
+  <% } %>
+</header>
+  <script>
+    var locals.pollId =     location.search.split('voting/')[1];
+  </script>
+<main>
+  
+    <div class="jumbotron">
+      <h1>Lets vote on a poll</h1>     
+      
+      <h2> Poll Title: "<%=pollTitle%>"</h2>
+      <br>
+      <h3 style="margin-left:-50%;">
+         Options
+      </h3>
+
+          <ul>
+            <%  for(var i = 0; i< votingOptions.length; i++){ %>
+      <form id="myForm" action="/votePollAction" method="POST">
+        <input id="pollId" name="pollId" style="visibility: hidden" value='<%=locals.pollId%>'</input>
+			<div id="pollDetails">
+				<li value="<%=votingOptions[i]%>" placeholder="<%=votingOptions[i].toString()%>" name="voteId" class="entryHolder">  
+					<input style="visibility: hidden" name="voteId" value="<%=votingOptions[i]%>">
+						<%=  votingOptions[i]   %>
+					<button style="height: 100%; width: 20%; float: right;">Choose</button>
+		</li>
+
+        </div>
+              </form>
+          <%        } %>
+          </ul>
+                </div>
+              </form>
+      
+      
+  </div>
+       <script>
+
+         $("#addMoreEntries").click(function(){
+        $("ol").append("<li> <input type='text' name='pollEntries[]'  placeholder='options'> </li>");
+    });
+     
+     </script>
+  
+</main>
+
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+
+</body>
+</html>
+

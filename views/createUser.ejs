@@ -1,0 +1,51 @@
+<!-- views/pages/index.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../views/partials/head %>
+</head>
+<body class="container">
+ 
+  <header>
+  <% if(!locals.user){ %>
+     <% include ../views/partials/header  %>
+  <%  %>
+  <% }else{ %>
+     <% include ../views/partials/logHeader  %>
+  <% } %>
+</header>
+  
+<main>
+    <div class="jumbotron">
+      <h1>Lets create a user</h1>     
+      <br>
+      <form action="/createUserPost" method="POST">
+          <input type="text" name="username"  placeholder="Username">  
+          <p>    
+            Please select a unique username
+          </p>
+          <br>
+          <input type="text" name="password"  placeholder="Password">  
+          <p>
+            Please select a unique password
+          </p>
+          <br>
+          <input type="text" name="passwordConf"  placeholder="Password">  
+          <p>
+            Please confirm your password
+          </p>
+          <button>
+            I have entered the required details
+          </button>
+        </form>    
+  </div>
+</main>
+
+<footer>
+    <% include ../views/partials/footer %>
+</footer>
+
+</body>
+</html>
+
