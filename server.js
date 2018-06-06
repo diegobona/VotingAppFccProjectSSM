@@ -18,7 +18,7 @@
  var mongoose = require('mongoose');
  var User = require("./models/user");
  var polls = require("./models/polls");
- mongoose.connect('mongodb+srv://user1:pass1@ssmongo0-ef6n5.mongodb.net/UserTrack01')
+ mongoose.connect('Url goes here')
 
  var connection = mongoose.connection;
  connection.on('connected', function () { 
