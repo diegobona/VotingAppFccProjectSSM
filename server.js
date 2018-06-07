@@ -20,7 +20,6 @@
  var polls = require("./models/polls");
  mongoose.connect(process.env.mongoose)
 
-
  var connection = mongoose.connection;
  connection.on('connected', function () { 
  })
