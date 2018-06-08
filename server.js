@@ -416,19 +416,6 @@
  })
 
 
-
-
-
- app.listen(process.env.PORT || 3000, function () {
-     console.log('Node.js listening ...');
- });
-
- app.set('view engine', 'ejs');
-
-
-
-
-
  //functions
 
  function n(n) {
@@ -448,3 +435,9 @@
          next();
      });
  }
+
+ app.listen(process.env.PORT || 3000, function () {
+     console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+ });
+
+ app.set('view engine', 'ejs');
