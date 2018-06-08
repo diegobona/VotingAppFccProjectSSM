@@ -1,0 +1,7 @@
+{
+"name": "Voting App in Node.js",
+"description": "An app which allows users to register accounts & create, delete and vote on polls",
+"repository": "https://github.com/saifsm1994/VotingAppFccProjectSSM/",
+"logo": "../assets/favicon.ico",
+"keywords":["node", "mongoose", "mongodb", "bcrypt", "express", "ejs"]
+}

@@ -5,7 +5,7 @@
 
  'use strict';
 
-//some of theese aren't fully necessary and can be coded around fairly easily. Using them was easier, however
+ //some of theese aren't fully necessary and can be coded around fairly easily. Using them was easier, however
  var fs = require('fs');
  var express = require('express');
 
@@ -21,44 +21,45 @@
  mongoose.connect(process.env.mongoose)
 
  var connection = mongoose.connection;
- connection.on('connected', function () { 
- })
+ connection.on('connected', function () {})
 
- 
+
  app.use(bodyParser.urlencoded({
      extended: true
  }));
 
-//use sessions for tracking logins
-app.use(session({
-  secret: 'work hard or hard work',
-  resave: true,
-  saveUninitialized: false
-}));
+ //use sessions for tracking logins
+ app.use(session({
+     secret: 'work hard or hard work',
+     resave: true,
+     saveUninitialized: false
+ }));
 
 
 
-// Logout Route - accessing this page deletes the session
-app.route('/logout')
-.get(function(req,res){
-  if (req.session) {
-    // delete session object
-    req.session.destroy(function (err) {
-      if (err) {
-        res.render('message.ejs', {message2: err})
+ // Logout Route - accessing this page deletes the session
+ app.route('/logout')
+     .get(function (req, res) {
+         if (req.session) {
+             // delete session object
+             req.session.destroy(function (err) {
+                 if (err) {
+                     res.render('message.ejs', {
+                         message2: err
+                     })
 
-      } else {
-        return res.redirect('/');
-      }
-    });
-  }
+                 } else {
+                     return res.redirect('/');
+                 }
+             });
+         }
 
-})
+     })
 
-app.use(function(req, res, next) {
-  res.locals.user = req.session.username;
-  next();
-});
+ app.use(function (req, res, next) {
+     res.locals.user = req.session.username;
+     next();
+ });
 
 
 
@@ -66,7 +67,7 @@ app.use(function(req, res, next) {
  app.route('/createUserPost')
      .post(function (req, res) {
          //Verify that link is proper/valid
-         if (req.body.username && req.body.password && req.body.passwordConf && req.body.password == req.body.passwordConf ) {
+         if (req.body.username && req.body.password && req.body.passwordConf && req.body.password == req.body.passwordConf) {
              var userData = {
                  username: req.body.username,
                  password: req.body.password,
@@ -74,30 +75,44 @@ app.use(function(req, res, next) {
              };
              //insert data into the database
              User.create(userData, function (err, user) {
-                 if (err) {console.log('error 59');res.render('message.ejs', {message2: err})} else {
+                 if (err) {
+                     console.log('error 59');
+                     res.render('message.ejs', {
+                         message2: err
+                     })
+                 } else {
                      console.log('A new user has been created');
-                     return res.render('message.ejs', {message1: 'Congratulations', message2: 'You have registed a new user. Your username is ' + userData.username})
+                     return res.render('message.ejs', {
+                         message1: 'Congratulations',
+                         message2: 'You have registed a new user. Your username is ' + userData.username
+                     })
                  }
              });
-         }else{
-			 //if password or username are invalid
-         res.render('message.ejs', {message2: 'Invalid request, please try a new username and password combination'})
+         } else {
+             //if password or username are invalid
+             res.render('message.ejs', {
+                 message2: 'Invalid request, please try a new username and password combination'
+             })
          }
      })
 
-//Authenticates user login
+ //Authenticates user login
  app.route('/logInAuth')
      .post(function (req, res) {
          User.getAuthenticated(req.body.username, req.body.password, function (err, user, reason) {
-             if (err) {console.log('1 error')}
+             if (err) {
+                 console.log('1 error')
+             }
 
              if (user) {
-               
-               req.session.userId = user._id;
-               req.session.username = user.username;
-               res.redirect('/');
+
+                 req.session.userId = user._id;
+                 req.session.username = user.username;
+                 res.redirect('/');
              } else {
-               res.render('message.ejs', {message2: 'wrong password or username'})
+                 res.render('message.ejs', {
+                     message2: 'wrong password or username'
+                 })
              }
 
          })
@@ -109,21 +124,24 @@ app.use(function(req, res, next) {
  //No editing existing polls here
  app.route('/createPoll')
      .post(function (req, res) {
-   if(!req.session.username){
-     res.render('message.ejs', {message1: 'please log in first'});}else{
+         if (!req.session.username) {
+             res.render('message.ejs', {
+                 message1: 'please log in first'
+             });
+         } else {
              //enter user sign in check here
-             if (    req.session.username && req.body.pollTitle && req.body.pollEntries) {
+             if (req.session.username && req.body.pollTitle && req.body.pollEntries) {
                  //declare mongoose collections
-               var uniqueIdSource = crypto.randomBytes(6).toString('hex')
-               var pollVotesHolder = [];
-                              
+                 var uniqueIdSource = crypto.randomBytes(6).toString('hex')
+                 var pollVotesHolder = [];
+
                  var pollEntriesHolder = [];
                  for (var i = 0; i < req.body.pollEntries.length; i++) {
                      pollVotesHolder[i] = 0;
                      pollEntriesHolder[i] = req.body.pollEntries[i];
                  }
-               pollEntriesHolder = pollEntriesHolder.filter(Boolean)
-               
+                 pollEntriesHolder = pollEntriesHolder.filter(Boolean)
+
                  var pollHolder = {
                      username: req.session.username,
                      uniqueId: uniqueIdSource, //array of urls
@@ -133,39 +151,48 @@ app.use(function(req, res, next) {
                  }
                  console.log('pollHolder check = ' + pollHolder);
                  polls.findOneAndUpdate({
-                     username:  req.session.username,
+                     username: req.session.username,
                      pollTitle: req.body.pollTitle
                  }, pollHolder, {
                      upsert: true,
                      setDefaultsOnInsert: true
                  }, function (err, ans) {
                      if (err) {
-                       res.render('message.ejs', {message2: err})
+                         res.render('message.ejs', {
+                             message2: err
+                         })
                      }
-                     console.log('ans ='+ ans);
+                     console.log('ans =' + ans);
                      res.redirect('/voting/' + uniqueIdSource);
                  })
              }
-   if(!req.session.username ){
-     res.render('message.ejs', {message2: 'Please Log In to Create a Poll'})
-     // res.render('errorDoc.ejs', {errorMessage: 'Please Log In to Create a Poll'})
-   }else{
-   if(!req.body.pollTitle ){
-     res.render('message.ejs', {message2: 'Invalid poll title, please try again'})
-     // res.render('errorDoc.ejs', {errorMessage: 'Invalid poll title, please try again'})
-     
-     }else{
-   if(!req.body.pollEntries ){
-     res.render('message.ejs', {message2: 'Invalid poll entry, please try again'})
-     // res.render('errorDoc.ejs', {errorMessage: 'Invalid poll entry, please try again'})
-   
-   }}
-     }
-   
-   
-    
- }}
-)
+             if (!req.session.username) {
+                 res.render('message.ejs', {
+                     message2: 'Please Log In to Create a Poll'
+                 })
+                 // res.render('errorDoc.ejs', {errorMessage: 'Please Log In to Create a Poll'})
+             } else {
+                 if (!req.body.pollTitle) {
+                     res.render('message.ejs', {
+                         message2: 'Invalid poll title, please try again'
+                     })
+                     // res.render('errorDoc.ejs', {errorMessage: 'Invalid poll title, please try again'})
+
+                 } else {
+                     if (!req.body.pollEntries) {
+                         res.render('message.ejs', {
+                             message2: 'Invalid poll entry, please try again'
+                         })
+                         // res.render('errorDoc.ejs', {errorMessage: 'Invalid poll entry, please try again'})
+
+                     }
+                 }
+             }
+
+
+
+         }
+     })
 
 
  //Returns all stored polls
@@ -177,141 +204,159 @@ app.use(function(req, res, next) {
              if (err) {
                  console.log('error')
              } else {
-               var messageArray = [];
-               for(var i = 0; i< pollList.length; i++){
-                 var innerMessageArrayObject = {};
-               innerMessageArrayObject.pollTitle = pollList[i].pollTitle;
-               innerMessageArrayObject.pollUrl = pollList[i].uniqueId;
-               innerMessageArrayObject.buttonLinkResults = pollList[i].uniqueId;
-               innerMessageArrayObject.buttonMessageResults = 'Results';
-               messageArray[i] = innerMessageArrayObject;  
-               }
-               
-               var sendObject = {messageArray : messageArray}
-               
+                 var messageArray = [];
+                 for (var i = 0; i < pollList.length; i++) {
+                     var innerMessageArrayObject = {};
+                     innerMessageArrayObject.pollTitle = pollList[i].pollTitle;
+                     innerMessageArrayObject.pollUrl = pollList[i].uniqueId;
+                     innerMessageArrayObject.buttonLinkResults = pollList[i].uniqueId;
+                     innerMessageArrayObject.buttonMessageResults = 'Results';
+                     messageArray[i] = innerMessageArrayObject;
+                 }
+
+                 var sendObject = {
+                     messageArray: messageArray
+                 }
+
                  res.render('messageArrayLogged.ejs', sendObject)
              }
          })
      })
 
 
-//route to show all polls
+ //route to show all polls
  app.route('/myPolls')
      .get(function (req, res) {
-   if(!req.session.username){
-     res.render('message.ejs', {message1: 'please log in first'});}else{
-           polls.find({
-			   // not secure - would be better to use _id if actually needed
-             username: req.session.username
-         }, function (err, pollReturnObject) {
+         if (!req.session.username) {
+             res.render('message.ejs', {
+                 message1: 'please log in first'
+             });
+         } else {
+             polls.find({
+                 // not secure - would be better to use _id if actually needed
+                 username: req.session.username
+             }, function (err, pollReturnObject) {
 
-             var messageArray = [];
-               for(var i = 0; i< pollReturnObject.length; i++){
-                 var innerMessageArrayObject = {};
-                 innerMessageArrayObject.pollTitle = pollReturnObject[i].pollTitle;
-                 innerMessageArrayObject.pollUrl = pollReturnObject[i].uniqueId;
-                 innerMessageArrayObject.buttonLinkDelete = pollReturnObject[i]._id;
-                 innerMessageArrayObject.buttonMessageDelete = 'Delete';
-                 innerMessageArrayObject.buttonLinkResults = pollReturnObject[i].uniqueId;
-                 innerMessageArrayObject.buttonMessageResults = 'Results';
-                 messageArray[i] = (innerMessageArrayObject); 
-               }
-               var sendObject = {messageArray : messageArray}
-               
-               //if there are no polls or the user is not logged in
-               if(pollReturnObject.length > 0){
-                 res.render('messageArrayLogged.ejs', sendObject);}else{
-                   res.render('message.ejs', {message1: 'please create a poll first'})}
-           })
-     }
- }
-         )
+                 var messageArray = [];
+                 for (var i = 0; i < pollReturnObject.length; i++) {
+                     var innerMessageArrayObject = {};
+                     innerMessageArrayObject.pollTitle = pollReturnObject[i].pollTitle;
+                     innerMessageArrayObject.pollUrl = pollReturnObject[i].uniqueId;
+                     innerMessageArrayObject.buttonLinkDelete = pollReturnObject[i]._id;
+                     innerMessageArrayObject.buttonMessageDelete = 'Delete';
+                     innerMessageArrayObject.buttonLinkResults = pollReturnObject[i].uniqueId;
+                     innerMessageArrayObject.buttonMessageResults = 'Results';
+                     messageArray[i] = (innerMessageArrayObject);
+                 }
+                 var sendObject = {
+                     messageArray: messageArray
+                 }
+
+                 //if there are no polls or the user is not logged in
+                 if (pollReturnObject.length > 0) {
+                     res.render('messageArrayLogged.ejs', sendObject);
+                 } else {
+                     res.render('message.ejs', {
+                         message1: 'please create a poll first'
+                     })
+                 }
+             })
+         }
+     })
 
 
-app.route('/deletePoll')
-  .post(function(req,res){
-  console.log('req.body.deleteId == ' + req.body.deleteId);
-  polls.findByIdAndRemove(req.body.deleteId, (error, data)=>{
-    console.log("data all gone and deleted yo");
-    res.redirect('/myPolls');
-  }
-  )
+ app.route('/deletePoll')
+     .post(function (req, res) {
+         console.log('req.body.deleteId == ' + req.body.deleteId);
+         polls.findByIdAndRemove(req.body.deleteId, (error, data) => {
+             console.log("data all gone and deleted yo");
+             res.redirect('/myPolls');
+         })
 
-})
+     })
 
 
 
 
  app.route('/voting/:requrl')
-.get(function(req, res){
-  polls.findOne({uniqueId: req.params.requrl}, function(request, response){
-    var votingOptions = response.pollEntries[0];
-    var pollTitle = response.pollTitle;
-    req.session.uniqueId = req.params.requrl;
-    
-    var votingOptionsPassObject = {votingOptions: votingOptions, pollTitle: pollTitle};
-    res.render("voting.ejs", votingOptionsPassObject)
-  })
- }
-    )
+     .get(function (req, res) {
+         polls.findOne({
+             uniqueId: req.params.requrl
+         }, function (request, response) {
+             var votingOptions = response.pollEntries[0];
+             var pollTitle = response.pollTitle;
+             req.session.uniqueId = req.params.requrl;
+
+             var votingOptionsPassObject = {
+                 votingOptions: votingOptions,
+                 pollTitle: pollTitle
+             };
+             res.render("voting.ejs", votingOptionsPassObject)
+         })
+     })
 
  app.route('/results/:requrl')
-.get(function(req, res){
-  polls.findOne({uniqueId: req.params.requrl}, function(request, response){
-    var votingOptions = response.pollEntries[0];
-    var votingOptionsPassObject = {votingOptions: votingOptions, titleOfPoll: response.pollTitle, pollVotes: response.pollVotes };
-    res.render("results2.ejs", votingOptionsPassObject)
-  })
- }
-    )
+     .get(function (req, res) {
+         polls.findOne({
+             uniqueId: req.params.requrl
+         }, function (request, response) {
+             var votingOptions = response.pollEntries[0];
+             var votingOptionsPassObject = {
+                 votingOptions: votingOptions,
+                 titleOfPoll: response.pollTitle,
+                 pollVotes: response.pollVotes
+             };
+             res.render("results2.ejs", votingOptionsPassObject)
+         })
+     })
 
 
 
 
-               // req.session.userId = user._id;
+ // req.session.userId = user._id;
 
 
-app.route('/votePollAction')
-    .post(function (req, res) {
-            //checks if the user has already voted
-            if (!req.session[req.session.uniqueId]) {
-                //if form submits poll id use it
-                if (req.session.uniqueId) {
-                    var requrl = req.session.uniqueId; //uniqueId = url lookup route}
-                    var voteId = String(req.body.voteId);
-                    console.log('requested poll: ' + requrl + ",  requested vote: " + voteId);
-                    polls.findOne({
-                        'uniqueId': requrl
-                    }, function (err, data) {
-                        var urlHolder = data.uniqueId;
-                        var pollEntryArray = data.pollEntries[0];
-                        var voteCountArray = data.pollVotes;
-                        console.log('retrieved a poll for voting on entry index  ' + pollEntryArray.indexOf(voteId) + " ordered to increase a vote of  " + voteCountArray[pollEntryArray.indexOf(voteId)]);
-                        var votePosition = pollEntryArray.indexOf(voteId);
-                        data.pollVotes[votePosition] = data.pollVotes[votePosition] + 1;
-                        data.markModified('pollVotes')
-                        data.save(function (err) {
-                            if (err) {
-                                console.log(err);
-                                res.render('message.ejs', {
-                                    message2: 'An Unknown Error Occurred',
-                                    message3: 'Please try again later'
-                                });
-                                return;
-                            }
-                            req.session[req.session.uniqueId] = true;
-                            res.redirect('results/' + urlHolder);
-                        });
-                    })
-                } else {
-                    //If user has voted, prevent vote
-                    res.render('message.ejs', {
-                        message2: 'Sorry but you have already voted. Try voting on another poll instead'
-                    })
-                }
-            }}
-         )
-        
+ app.route('/votePollAction')
+     .post(function (req, res) {
+         //checks if the user has already voted
+         if (!req.session[req.session.uniqueId]) {
+             //if form submits poll id use it
+             if (req.session.uniqueId) {
+                 var requrl = req.session.uniqueId; //uniqueId = url lookup route}
+                 var voteId = String(req.body.voteId);
+                 console.log('requested poll: ' + requrl + ",  requested vote: " + voteId);
+                 polls.findOne({
+                     'uniqueId': requrl
+                 }, function (err, data) {
+                     var urlHolder = data.uniqueId;
+                     var pollEntryArray = data.pollEntries[0];
+                     var voteCountArray = data.pollVotes;
+                     console.log('retrieved a poll for voting on entry index  ' + pollEntryArray.indexOf(voteId) + " ordered to increase a vote of  " + voteCountArray[pollEntryArray.indexOf(voteId)]);
+                     var votePosition = pollEntryArray.indexOf(voteId);
+                     data.pollVotes[votePosition] = data.pollVotes[votePosition] + 1;
+                     data.markModified('pollVotes')
+                     data.save(function (err) {
+                         if (err) {
+                             console.log(err);
+                             res.render('message.ejs', {
+                                 message2: 'An Unknown Error Occurred',
+                                 message3: 'Please try again later'
+                             });
+                             return;
+                         }
+                         req.session[req.session.uniqueId] = true;
+                         res.redirect('results/' + urlHolder);
+                     });
+                 })
+             } else {
+                 //If user has voted, prevent vote
+                 res.render('message.ejs', {
+                     message2: 'Sorry but you have already voted. Try voting on another poll instead'
+                 })
+             }
+         }
+     })
+
 
  app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -327,25 +372,27 @@ app.route('/votePollAction')
 
  app.route('/:page')
      .get(function (req, res) {
-    if (req.params.page.indexOf('.ejs') != -1) {
-    res.render(req.params.page);
-    }else{
-         if (req.params.page.indexOf('.html') == -1) {} else {
-             req.params.page = req.params.page.substring(0, req.params.page.length - 5);
+         if (req.params.page.indexOf('.ejs') != -1) {
+             res.render(req.params.page);
+         } else {
+             if (req.params.page.indexOf('.html') == -1) {} else {
+                 req.params.page = req.params.page.substring(0, req.params.page.length - 5);
+             }
+             res.sendFile(process.cwd() + '/views/' + req.params.page + '.html');
          }
-         res.sendFile(process.cwd() + '/views/' + req.params.page + '.html');
-     }})
+     })
 
 
 
  app.route('/')
      .get(function (req, res) {
-   if(req.session.username){
-         res.render(process.cwd() + '/views/indexLogged.ejs');}else{
-          res.render(process.cwd() + '/views/index.ejs');
-          
-          }
-          
+         if (req.session.username) {
+             res.render(process.cwd() + '/views/indexLogged.ejs');
+         } else {
+             res.render(process.cwd() + '/views/index.ejs');
+
+         }
+
          // res.sendFile(process.cwd() + '/views/login.html');
      })
 
@@ -372,11 +419,11 @@ app.route('/votePollAction')
 
 
 
- app.listen(process.env.PORT, function () {
+ app.listen(process.env.PORT || 3000, function () {
      console.log('Node.js listening ...');
  });
 
-app.set('view engine', 'ejs');
+ app.set('view engine', 'ejs');
 
 
 
