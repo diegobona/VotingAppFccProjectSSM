@@ -306,7 +306,9 @@
                  titleOfPoll: response.pollTitle,
                  pollVotes: response.pollVotes
              };
-             res.render("results2.ejs", votingOptionsPassObject)
+             
+             if(!req.session[req.session.uniqueId]){res.render("results2.ejs", votingOptionsPassObject)}
+             if(req.session[req.session.uniqueId]){res.render("results0.ejs", votingOptionsPassObject)}
          })
      })
 
