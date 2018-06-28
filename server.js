@@ -307,8 +307,8 @@
                  pollVotes: response.pollVotes
              };
              
-             if(!req.session[req.session.uniqueId]){res.render("results2.ejs", votingOptionsPassObject)}
-             if(req.session[req.session.uniqueId]){res.render("results0.ejs", votingOptionsPassObject)}
+             if(req.session.uniqueId){res.render("results2.ejs", votingOptionsPassObject)}
+             if(!req.session.uniqueId){res.render("results0.ejs", votingOptionsPassObject)}
          })
      })
 
@@ -316,7 +316,6 @@
 
 
  // req.session.userId = user._id;
-
 
  app.route('/votePollAction')
      .post(function (req, res) {
