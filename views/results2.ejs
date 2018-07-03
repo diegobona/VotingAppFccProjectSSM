@@ -49,15 +49,14 @@
                         ['Choice', 'Votes'],
 
                         <%  for(var i = 0; i< pollVotes.length; i++){ %> ['<%=votingOptions[i]%>', <%=pollVotes[i]%>]
-                        <%if(i != pollVotes.length - 1 ){%>,
-                        <%}%>
+                        <%if(i != pollVotes.length - 1 ){%>, <%}%>
                         <%        } %>
 
                     ]);
 
                     // Optional; add a title and set the width and height of the chart
                     var options = {
-                        title: <% titleOfPoll %>,
+                        title: '<% titleOfPoll %>',
                         width: 500,
                         height: 500
                     };
