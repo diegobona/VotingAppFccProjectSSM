@@ -54,7 +54,7 @@
 
                     // Optional; add a title and set the width and height of the chart
                     var options = {
-                        title: decodeURI(<% titleOfPoll %>),
+                        title: <% titleOfPoll %>,
                         width: 500,
                         height: 500
                     };
@@ -63,8 +63,6 @@
                     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
                     chart.draw(data, options);
                 }
-
-                console.log(<% titleOfPoll %>);
 
             </script>
 
