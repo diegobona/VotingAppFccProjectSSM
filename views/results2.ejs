@@ -49,7 +49,8 @@
                         ['Choice', 'Votes'],
 
                         <%  for(var i = 0; i< pollVotes.length; i++){ %> ['<%=votingOptions[i]%>', <%=pollVotes[i]%>]
-                        <%if(i != pollVotes.length - 1 ){%>, <%}%>
+                        <%if(i != pollVotes.length - 1 ){%>,
+                        <%}%>
                         <%        } %>
 
                     ]);
@@ -57,10 +58,14 @@
                     // Optional; add a title and set the width and height of the chart
                     var options = {
 <<<<<<< HEAD
+<<<<<<< HEAD
                         title: "<% titleOfPoll %>",
 =======
                         title: '<% titleOfPoll %>',
 >>>>>>> parent of accc56b... minor title error fix
+=======
+                        title: <% titleOfPoll %>,
+>>>>>>> parent of 5ba3f28... Revert "Revert "unknown bug - reverting change""
                         width: 500,
                         height: 500
                     };
