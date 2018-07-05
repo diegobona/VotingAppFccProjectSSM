@@ -71,6 +71,12 @@ img {
 
 }
 
+.liTitle2{
+  color: black;
+  vertical-align: middle;
+  text-align: center;
+}
+
 #footer {
   position:relative;
 /*   bottom:0;

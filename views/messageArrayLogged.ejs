@@ -10,7 +10,7 @@
   
   <% if(!locals.user){ %>
      <% include ../views/partials/header  %>
-  <% console.log(locals); %>
+  <% console.log("locals used to be here"); %>
   <% }else{ %>
      <% include ../views/partials/logHeader  %>
   <% } %>
@@ -32,17 +32,19 @@
           <%= i  %>
           </a>
          <% if(messageArrayVariable){ %>
-          <a class="liTitle" onclick="location.href='/voting/<%=messageArrayVariableLink %>';" >
+    <div class="liTitle"><a style="line-height: 350%" onclick="location.href='/voting/<%=messageArrayVariableLink %>';" >
              <%= messageArrayVariable %>
-             </a>
+              </a>
+        <button class="bg-primary" style="float: right; height: 100%;" onclick="location.href='/voting/<%=messageArrayVariableLink %>';">Vote</button>
+             </div>
           <% } %> 
           
-  <div class="float: right; height:100%;">
+
+        <div class="float: right; height:100%;">
                   <% if(buttonLinkResults){ %>
            <a href="/results/<%=buttonLinkResults%>" ><button type="button" style="text-align: center; display:table-cell; vertical-align:middle;  height:100%; width: 100%; background-color:lightgreen;">
             <%=buttonMessageResults%>
             </button></a>
-          </form>
           <% } %> 
       
       

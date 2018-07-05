@@ -18,7 +18,12 @@
  var mongoose = require('mongoose');
  var User = require("./models/user");
  var polls = require("./models/polls");
- mongoose.connect(process.env.mongoose)
+require('dotenv').config()
+
+var urlM = process.env.mongoose;
+mongoose.connect(urlM,  function(error) {console.log(process.env.mongoose)  // if error is truthy, the initial connection failed.
+                                        })
+
 
  var connection = mongoose.connection;
  connection.on('connected', function () {})
@@ -199,6 +204,7 @@
 
  app.route('/showAllPolls' && '/allPolls')
      .get(function (req, res) {
+         console.log("called all polls")
          polls.find({}, function (err, pollList) {
 
              if (err) {
@@ -280,6 +286,7 @@
 
  app.route('/voting/:requrl')
      .get(function (req, res) {
+     if (!req.session[req.session.uniqueId]) {
          polls.findOne({
              uniqueId: req.params.requrl
          }, function (request, response) {
@@ -293,6 +300,13 @@
              };
              res.render("voting.ejs", votingOptionsPassObject)
          })
+     
+ }else {
+         //If user has voted, prevent vote
+         res.render('message.ejs', {
+             message2: 'Sorry but you have already voted. Try voting on another poll instead'
+         })
+     }
      })
 
  app.route('/results/:requrl')
@@ -306,9 +320,13 @@
                  titleOfPoll: response.pollTitle,
                  pollVotes: response.pollVotes
              };
-             
-             if(req.session.uniqueId){res.render("results2.ejs", votingOptionsPassObject)}
-             if(!req.session.uniqueId){res.render("results0.ejs", votingOptionsPassObject)}
+
+             if (req.session.uniqueId) {
+                 res.render("results2.ejs", votingOptionsPassObject)
+             }
+             if (!req.session.uniqueId) {
+                 res.render("results0.ejs", votingOptionsPassObject)
+             }
          })
      })
 
@@ -355,6 +373,11 @@
                      message2: 'Sorry but you have already voted. Try voting on another poll instead'
                  })
              }
+         } else {
+             //If user has voted, prevent vote
+             res.render('message.ejs', {
+                 message2: 'Sorry but you have already voted. Try voting on another poll instead'
+             })
          }
      })
 
